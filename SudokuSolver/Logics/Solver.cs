@@ -62,62 +62,45 @@ namespace SudokuSolver.Logics
                 }
             }
 
-
-            while (counter < 700)
+            
+            for (int a = 0; a < 9; a++)
             {
-                for (int a = 0; a < 9; a++)
+                for (int b = 0; b < 9; b++)
                 {
-                    for (int b = 0; b < 9; b++)
+                    if (sudoku[a][b] == 0)
                     {
-                        if (sudoku[a][b] == 0)
+
+                        var numberlist = Enumerable.Range(0, 10).ToList();
+
+                        numberlist = horizontalchecker(sudoku, a, b, numberlist);
+
+                        numberlist = verticalchecker(sudoku, a, b, numberlist);
+
+                        numberlist = boxchecker(sudoku, a, b, numberlist);
+
+                        int numberlistcounter = 0;
+                        while (numberlistcounter < numberlist.Count)
                         {
-
-                            var numberlist = Enumerable.Range(0, 10).ToList();
-
-                            numberlist = horizontalchecker(sudoku, a, b, numberlist);
-
-                            numberlist = verticalchecker(sudoku, a, b, numberlist);
-
-                            numberlist = boxchecker(sudoku, a, b, numberlist);
-
-
-                            Boolean solved = false;
-                            int numberlistID = 0;
-
-                            while (solved == false)
+                            sudoku[a][b] = numberlist[numberlistcounter];
+                            Solve(sudoku);
+                            if (!SudokuSolver(sudoku))
                             {
-                                if (numberlist.Count <= 6 && numberlist.Count >0)
-                                {
-                                    sudoku[a][b] = numberlist[numberlistID];
-                                    sudoku = Solve(sudoku);
-                                    for (int i = 0; i < 9; i++)
-                                    {
-                                        for (int j = 0; j < 9; j++)
-                                        {
-                                            if (sudoku[i][j] == 0)
-                                            {
-                                                sudoku = startsudoku;
-                                                numberlistID++;
-
-                                            }
-                                            else
-                                            {
-                                                solved = true;
-                                            }
-                                        }
+                                numberlistcounter++;
+                                for (int i = 0; i < 9; i++)
+                                { 
+                                    for (int j = 0; j < 9; j++)
+                                    {                                        
+                                        sudoku[i][j] = startsudoku[i][j];
                                     }
-                                    counter = 0;
-                                }
-                                else
-                                {
-                                    solved = true;
                                 }
                             }
-                            
+                            else
+                            {
+                                return sudoku;
+                            }
                         }
                     }
                 }
-                counter++;
             }
         return sudoku;
         }
@@ -286,6 +269,56 @@ namespace SudokuSolver.Logics
             return numberlist;
         }
 
+        public bool SudokuSolver(int[][] sudoku)
+        {
+            for (int a = 0; a < 9; a++)
+            {
+                for (int b = 0; b < 9; b++)
+                {
+                    if(sudoku[a][b] == 0)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
     }
 }
 
+
+
+
+
+//Boolean solved = false;
+//int numberlistID = 0;
+
+//                            while (solved == false && counter<100)
+//                            {
+//                                if (numberlist.Count <= 9 && numberlist.Count<=numberlistID)
+//                                {
+//                                    sudoku[a][b] = numberlist[numberlistID];
+//                                    sudoku = Solve(sudoku);
+//                                    for (int i = 0; i< 9; i++)
+//                                    {
+//                                        for (int j = 0; j< 9; j++)
+//                                        {
+//                                            if (sudoku[i][j] == 0)
+//                                            {
+//                                                sudoku = startsudoku;
+//                                                numberlistID++;
+                                                
+//                                            }
+//                                            else
+//                                            {
+//                                                solved = true;
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                                else
+//                                {
+//                                    counter++;
+//                                }
+//                            }
