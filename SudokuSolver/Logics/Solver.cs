@@ -115,130 +115,15 @@ namespace SudokuSolver.Logics
 
         public List<int> boxchecker(int[][] sudoku, int a, int b, List<int> numberlist)
         {
-            if (a >= 0 && a <= 2)
+            int corda = a - a % 3;
+            int cordb = b - b % 3;
+            for (int i = corda; i < corda + 3; i++)
             {
-                if (b >= 0 && b <= 2)
+                for (int j = cordb; j < cordb + 3; j++)
                 {
-                    for (int c = 0; c <= 2; c++)
+                    if (numberlist.Contains(sudoku[i][j]))
                     {
-                        for (int d = 0; d <= 2; d++)
-                        {
-                            if (numberlist.Contains(sudoku[c][d]))
-                            {
-                                numberlist.Remove(sudoku[c][d]);
-                            }
-                        }
-                    }
-                }
-                else if (b >= 3 && b <= 5)
-                {
-                    for (int c = 0; c <= 2; c++)
-                    {
-                        for (int d = 3; d <= 5; d++)
-                        {
-                            if (numberlist.Contains(sudoku[c][d]))
-                            {
-                                numberlist.Remove(sudoku[c][d]);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    for (int c = 0; c <= 2; c++)
-                    {
-                        for (int d = 6; d <= 8; d++)
-                        {
-                            if (numberlist.Contains(sudoku[c][d]))
-                            {
-                                numberlist.Remove(sudoku[c][d]);
-                            }
-                        }
-                    }
-                }
-            }
-            else if (a >= 3 && a <= 5)
-            {
-                if (b >= 0 && b <= 2)
-                {
-                    for (int c = 3; c <= 5; c++)
-                    {
-                        for (int d = 0; d <= 2; d++)
-                        {
-                            if (numberlist.Contains(sudoku[c][d]))
-                            {
-                                numberlist.Remove(sudoku[c][d]);
-                            }
-                        }
-                    }
-                }
-                else if (b >= 3 && b <= 5)
-                {
-                    for (int c = 3; c <= 5; c++)
-                    {
-                        for (int d = 3; d <= 5; d++)
-                        {
-                            if (numberlist.Contains(sudoku[c][d]))
-                            {
-                                numberlist.Remove(sudoku[c][d]);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    for (int c = 3; c <= 5; c++)
-                    {
-                        for (int d = 6; d <= 8; d++)
-                        {
-                            if (numberlist.Contains(sudoku[c][d]))
-                            {
-                                numberlist.Remove(sudoku[c][d]);
-                            }
-                        }
-                    }
-                }
-
-            }
-            else
-            {
-                if (b >= 0 && b <= 2)
-                {
-                    for (int c = 6; c <= 8; c++)
-                    {
-                        for (int d = 0; d <= 2; d++)
-                        {
-                            if (numberlist.Contains(sudoku[c][d]))
-                            {
-                                numberlist.Remove(sudoku[c][d]);
-                            }
-                        }
-                    }
-                }
-                else if (b >= 3 && b <= 5)
-                {
-                    for (int c = 6; c <= 8; c++)
-                    {
-                        for (int d = 3; d <= 5; d++)
-                        {
-                            if (numberlist.Contains(sudoku[c][d]))
-                            {
-                                numberlist.Remove(sudoku[c][d]);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    for (int c = 6; c <= 8; c++)
-                    {
-                        for (int d = 6; d <= 8; d++)
-                        {
-                            if (numberlist.Contains(sudoku[c][d]))
-                            {
-                                numberlist.Remove(sudoku[c][d]);
-                            }
-                        }
+                        numberlist.Remove(sudoku[i][j]);
                     }
                 }
             }
