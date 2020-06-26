@@ -15,7 +15,7 @@ namespace SudokuSolver.Logics
 
         public int[][] Solve(int[][] sudoku)
         {
-            while (counter < 100)
+            while (counter < 1000)
             {
                 for (int a = 0; a < 9; a++)
                 {
@@ -89,20 +89,20 @@ namespace SudokuSolver.Logics
                                 for (int i = 0; i < 9; i++)
                                 { 
                                     for (int j = 0; j < 9; j++)
-                                    {                                        
-                                        sudoku[i][j] = startsudoku[i][j];
+                                    {
+                                        startsudoku[i][j] = sudoku[i][j];
                                     }
                                 }
                             }
                             else
                             {
-                                return sudoku;
+                                return startsudoku;
                             }
                         }
                     }
                 }
             }
-        return sudoku;
+            return startsudoku;
         }
 
         public int[][] Create(int[][] sudoku)
