@@ -11,11 +11,10 @@ namespace SudokuSolver.Logics
 {
     public class Solver
     {
-        int counter = 0;
 
         public int[][] Solve(int[][] sudoku)
         {
-            while (counter < 1000)
+            while (!SudokuSolver(sudoku))
             {
                 for (int a = 0; a < 9; a++)
                 {
@@ -26,22 +25,17 @@ namespace SudokuSolver.Logics
 
                             var numberlist = Enumerable.Range(0, 10).ToList();
 
-                            numberlist = horizontalchecker(sudoku, a, b, numberlist);
+                            numberlist = horizontalchecker(sudoku, a, numberlist);
 
-                            numberlist = verticalchecker(sudoku, a, b, numberlist);
+                            numberlist = verticalchecker(sudoku, b, numberlist);
 
                             numberlist = boxchecker(sudoku, a, b, numberlist);
 
                             if (numberlist.Count == 1)
                             {
                                 sudoku[a][b] = numberlist[0];
-                                counter = 0;
                             }
 
-                        }
-                        else
-                        {
-                            counter++;
                         }
                     }
                 }
@@ -49,60 +43,13 @@ namespace SudokuSolver.Logics
             return sudoku;
         }
 
-
         public int[][] SolveGuessing(int[][] sudoku)
-        {
-            int[][] startsudoku = new int[9][];
-            for (int i = 0; i < 9; i++)
+        {           
+            while (!SudokuSolver(sudoku))
             {
-                startsudoku[i] = new int[9];
-                for (int j = 0; j < 9; j++)
-                {
-                    startsudoku[i][j] = sudoku[i][j];
-                }
+
             }
-
-            
-            for (int a = 0; a < 9; a++)
-            {
-                for (int b = 0; b < 9; b++)
-                {
-                    if (sudoku[a][b] == 0)
-                    {
-
-                        var numberlist = Enumerable.Range(0, 10).ToList();
-
-                        numberlist = horizontalchecker(sudoku, a, b, numberlist);
-
-                        numberlist = verticalchecker(sudoku, a, b, numberlist);
-
-                        numberlist = boxchecker(sudoku, a, b, numberlist);
-
-                        int numberlistcounter = 0;
-                        while (numberlistcounter < numberlist.Count)
-                        {
-                            sudoku[a][b] = numberlist[numberlistcounter];
-                            Solve(sudoku);
-                            if (!SudokuSolver(sudoku))
-                            {
-                                numberlistcounter++;
-                                for (int i = 0; i < 9; i++)
-                                { 
-                                    for (int j = 0; j < 9; j++)
-                                    {
-                                        startsudoku[i][j] = sudoku[i][j];
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                return startsudoku;
-                            }
-                        }
-                    }
-                }
-            }
-            return startsudoku;
+            return sudoku;
         }
 
         public int[][] Create(int[][] sudoku)
@@ -127,10 +74,10 @@ namespace SudokuSolver.Logics
                     }
                 }
             }
-            return numberlist;
+            return numberlist;            
         }
 
-        public List<int> horizontalchecker(int[][] sudoku, int a, int b, List<int> numberlist)
+        public List<int> horizontalchecker(int[][] sudoku, int a, List<int> numberlist)
         {
             for (int c = 0; c < 9; c++)
             {
@@ -142,7 +89,7 @@ namespace SudokuSolver.Logics
             return numberlist;
         }
 
-        public List<int> verticalchecker(int[][] sudoku, int a, int b, List<int> numberlist)
+        public List<int> verticalchecker(int[][] sudoku, int b, List<int> numberlist)
         {
             for (int d = 0; d < 9; d++)
             {
@@ -168,6 +115,19 @@ namespace SudokuSolver.Logics
             }
             return true;
         }
+        public int[][] CreateBackup(int[][] sudoku)
+        {
+            int[][] backupsudoku = new int[9][];
+            for (int i = 0; i < 9; i++)
+            {
+                backupsudoku[i] = new int[9];
+                for (int j = 0; j < 9; j++)
+                {
+                    backupsudoku[i] = (int[])sudoku[i].Clone();
+                }
+            }
+            return backupsudoku;
+        }
 
     }
 }
@@ -175,6 +135,43 @@ namespace SudokuSolver.Logics
 
 
 
+
+
+
+//if (sudoku[a][b] == 0)
+//                        {
+//                            var numberlist = Enumerable.Range(1, 9).ToList();
+
+//numberlist = horizontalchecker(sudoku, a, numberlist);
+
+//numberlist = verticalchecker(sudoku, b, numberlist);
+
+//numberlist = boxchecker(sudoku, a, b, numberlist);
+
+//int numberlistcounter = 0;
+//                            while (numberlistcounter<numberlist.Count)
+//                            {
+//                                sudoku[a][b] = numberlist[numberlistcounter];
+//                                Solve(sudoku);
+////if (!SudokuSolver(sudoku))
+////{
+//numberlistcounter++;
+//                                    for (int i = 0; i< 9; i++)
+//                                    {
+//                                        for (int j = 0; j< 9; j++)
+//                                        {
+//                                            startsudoku[i][j] = sudoku[i][j];
+//                                        }
+//                                    }
+//                                //}
+//                                //else
+//                                //{
+//                                //    return sudoku;
+//                                //}
+
+//                            }
+
+//                        }
 
 //Boolean solved = false;
 //int numberlistID = 0;
