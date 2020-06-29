@@ -28,10 +28,6 @@ namespace SudokuSolver.Logics
                             numberlistcounter++;
                             var numberlist = Enumerable.Range(1, 9).ToList();
 
-                            numberlist = horizontalchecker(sudoku, a, numberlist);
-
-                            numberlist = verticalchecker(sudoku, b, numberlist);
-
                             numberlist = boxchecker(sudoku, a, b, numberlist);
 
                             if (numberlist.Count == 1)
@@ -67,6 +63,20 @@ namespace SudokuSolver.Logics
         {
             int corda = a - a % 3;
             int cordb = b - b % 3;
+            for (int c = 0; c < 9; c++)
+            {
+                if (numberlist.Contains(sudoku[a][c]))
+                {
+                    numberlist.Remove(sudoku[a][c]);
+                }
+            }
+            for (int d = 0; d < 9; d++)
+            {
+                if (numberlist.Contains(sudoku[d][b]))
+                {
+                    numberlist.Remove(sudoku[d][b]);
+                }
+            }
             for (int i = corda; i < corda + 3; i++)
             {
                 for (int j = cordb; j < cordb + 3; j++)
@@ -76,32 +86,8 @@ namespace SudokuSolver.Logics
                         numberlist.Remove(sudoku[i][j]);
                     }
                 }
-            }
+            }            
             return numberlist;            
-        }
-
-        public List<int> horizontalchecker(int[][] sudoku, int a, List<int> numberlist)
-        {
-            for (int c = 0; c < 9; c++)
-            {
-                if (numberlist.Contains(sudoku[a][c]))
-                {
-                    numberlist.Remove(sudoku[a][c]);
-                }
-            }
-            return numberlist;
-        }
-
-        public List<int> verticalchecker(int[][] sudoku, int b, List<int> numberlist)
-        {
-            for (int d = 0; d < 9; d++)
-            {
-                if (numberlist.Contains(sudoku[d][b]))
-                {
-                    numberlist.Remove(sudoku[d][b]);
-                }
-            }
-            return numberlist;
         }
 
         public bool SudokuSolver(int[][] sudoku)
