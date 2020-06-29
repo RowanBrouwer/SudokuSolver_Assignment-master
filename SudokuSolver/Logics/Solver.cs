@@ -4,26 +4,29 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 
 namespace SudokuSolver.Logics
-{
+{    
     public class Solver
     {
-
+        bool placed = false;
+        int numberlistcounter = 0;
         public int[][] Solve(int[][] sudoku)
         {
-            while (!SudokuSolver(sudoku))
+            do
             {
+                placed = false;
                 for (int a = 0; a < 9; a++)
                 {
                     for (int b = 0; b < 9; b++)
                     {
                         if (sudoku[a][b] == 0)
                         {
-
-                            var numberlist = Enumerable.Range(0, 10).ToList();
+                            numberlistcounter++;
+                            var numberlist = Enumerable.Range(1, 9).ToList();
 
                             numberlist = horizontalchecker(sudoku, a, numberlist);
 
@@ -34,21 +37,25 @@ namespace SudokuSolver.Logics
                             if (numberlist.Count == 1)
                             {
                                 sudoku[a][b] = numberlist[0];
+                                a = -1;                              
+                                placed = true;
+                                break;
                             }
-
                         }
                     }
                 }
-            }
+                if (!SudokuSolver(sudoku))
+                {
+                    break;
+                }
+            } while (placed);
             return sudoku;
         }
 
         public int[][] SolveGuessing(int[][] sudoku)
-        {           
-            while (!SudokuSolver(sudoku))
-            {
+        {
+            Solve(sudoku);
 
-            }
             return sudoku;
         }
 
@@ -56,10 +63,6 @@ namespace SudokuSolver.Logics
         {
             return sudoku;
         }
-
-
-
-
         public List<int> boxchecker(int[][] sudoku, int a, int b, List<int> numberlist)
         {
             int corda = a - a % 3;
@@ -128,7 +131,6 @@ namespace SudokuSolver.Logics
             }
             return backupsudoku;
         }
-
     }
 }
 
