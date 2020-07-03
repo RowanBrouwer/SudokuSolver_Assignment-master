@@ -8,15 +8,17 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.Remoting.Lifetime;
 using System.Web;
+using System.Web.Management;
 
 namespace SudokuSolver.Logics
 {
     public class Solver
     {
-        bool placed = false;
+
         int numberlistcounter = 0;
         public int[][] Solve(int[][] sudoku)
         {
+            bool placed = false;
             do
             {
                 placed = false;
@@ -27,8 +29,8 @@ namespace SudokuSolver.Logics
                         if (sudoku[a][b] == 0)
                         {
                             numberlistcounter++;
-                            var numberlist = Enumerable.Range(1, 9).ToList();
-
+                            //var numberlist = Enumerable.Range(1, 9).ToList();
+                            var numberlist = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
                             numberlist = numberchecker(sudoku, a, b, numberlist);
 
                             if (numberlist.Count == 1)
@@ -51,41 +53,7 @@ namespace SudokuSolver.Logics
 
         public int[][] SolveGuessing(int[][] sudoku)
         {
-            int[][] startsudoku = CreateBackup(sudoku);
-           
-            int  counter = 0;
-            while (!SudokuSolver(sudoku))
-            {
-                var numberlist = Enumerable.Range(1, 9).ToList();
-
-                int[] coord = getcoordofleast(sudoku, numberlist);
-                numberlist = numberchecker(sudoku, coord[0], coord[1], numberlist);
-
-
-                for (int i = 0; i < numberlist.Count; i++)
-                {
-                    sudoku[coord[0]][coord[1]] = numberlist[i];
-                    Solve(sudoku);
-                }
-                if (!SudokuSolver(sudoku))
-                {
-                    for (int i = 0; i < 9; i++)
-                    {
-                        for (int j = 0; j < 9; j++)
-                        {
-                            sudoku[i][j] = startsudoku[i][j];
-                        }
-                    }
-                }
-
-                counter++;
-                if (counter > 80)
-                {
-                    counter = 0;
-                }
-
-
-            }
+            sudoku = Guess(sudoku);
             return sudoku;
         }
 
@@ -138,7 +106,8 @@ namespace SudokuSolver.Logics
             }
             return true;
         }
-        public int[][] CreateBackup(int[][] sudoku)
+
+        public int[][] Backup(int[][] sudoku)
         {
             int[][] backupsudoku = new int[9][];
             for (int i = 0; i < 9; i++)
@@ -152,15 +121,44 @@ namespace SudokuSolver.Logics
             return backupsudoku;
         }
 
-        public int[][] guess(int[][] sudoku)
+        public int[][] Guess(int[][] sudoku, int a = 0, int b = 0)
         {
+
+            Solve(sudoku);
+            var numberlist = Enumerable.Range(1, 9).ToList();
+            int[] coord = getcoordofleast(ref sudoku);
+            for (int i = 0; i < numberlist.Count; i++)
+            {
+                int[][] sudokucopy = Backup(sudoku);
+
+                if (SudokuSolver(sudokucopy))
+                {
+                    return sudokucopy;
+                }
+                sudokucopy[coord[0]][coord[1]] = numberlist[i];
+
+                if (SudokuSolver(sudokucopy))
+                {
+                    return sudokucopy;
+                }
+
+                sudokucopy = Guess(sudokucopy);
+
+
+
+                if (SudokuSolver(sudokucopy))
+                {
+                    return sudokucopy;
+                }
+
+            }
             return sudoku;
         }
 
         public int[][] test(int[][] sudoku)
         {
 
-            int[][] startsudoku = CreateBackup(sudoku);
+            int[][] startsudoku = Backup(sudoku);
 
             for (int a = 0; a < 9; a++)
             {
@@ -204,7 +202,7 @@ namespace SudokuSolver.Logics
             return sudoku;
         }
 
-        public int[] getcoordofleast(int[][] sudoku,List<int> numberlist,int a =0, int b=0)
+        public int[] getcoordofleast(ref int[][] sudoku, int a = 0, int b = 0)
         {
             for (int least = 2; least < 10; least++)
             {
@@ -212,18 +210,39 @@ namespace SudokuSolver.Logics
                 {
                     for (int j = b; j < 9; j++)
                     {
-                        if (numberchecker(sudoku, i, i, numberlist).Count == least)
+                        //numberlist = Enumerable.Range(1, 9).ToList();
+
+                        var numberlist = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+                        if (numberchecker(sudoku, i, j, numberlist).Count == least && sudoku[i][j] == 0)
                         {
-                            return new int[2] { i, j };
+                            return new int[2] { j, i };
                         }
 
                     }
                 }
             }
-            return new int[2] {0,0 };
+            return new int[2] { 0, 0 };
         }
 
-        public void junk()
+        public bool validationcheck(int[][] sudoku)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if (numberchecker(sudoku, i, i, new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 }).Count == 0)
+                    {
+                        return false;
+                    }
+
+                }
+            }
+
+            return true;
+        }
+
+
+        public void junk(int[][] sudoku)
         {
             int[][] grid = new int[81][];
             bool listflag = false;
